@@ -26,43 +26,34 @@ public class CCI_Chap1_URLify
         URLify("Mr John Smith    ", 13);
     }
     
-    private static void URLify(String str, int len)
+    private static void URLify(String str, int charCount)
     {
-        char[] arr = str.toCharArray();
-        LinkedList<Character> queue = new LinkedList<>();
+        char[] content = str.toCharArray();
+        int spaceCount = 0, index;
+        for(int i=0; i<charCount; i++)
+            if(content[i] == ' ')
+                spaceCount++;
         
-        for (int i=0; i<arr.length; i++)
-        {
-            if (!queue.isEmpty())
-            {
-                if (queue.getLast() == ' ')
-                {
-                    queue.pollLast();
-                    arr[i-1] = '%';
-                    queue.addLast('0');
-                    queue.addLast('2');
-                    queue.addFirst(arr[i]);
-                }
-                else
-                {
-                    queue.addFirst(arr[i]);
-                    arr[i-1] = queue.pollLast();
-                }
-            }
-            
-            else if (arr[i] == ' ')
-            {
-                queue.addFirst(arr[i]);
-            }
-        }
+        index = charCount + spaceCount * 2;
+        if (charCount < str.length()) 
+            content[charCount] = '\0';
         
-        if (!queue.isEmpty())
-        {
-            arr[arr.length-1] = queue.pollLast();
+        for (int i = charCount - 1; i >= 0; i-- ) {
+            if (content[i] == ' ') 
+            {
+                content[index - 1] = '0';
+                content[index - 2] = '2';
+                content[index - 3] = '%';
+                index = index - 3;
+            } 
+            else {
+                content[index - 1] = content[i];
+                index--;
+            }
         }
         
         String url = "";
-        for (char c : arr)
+        for (char c : content)
         {
             url += c;
         }
